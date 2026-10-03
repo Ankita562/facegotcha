@@ -60,11 +60,20 @@ def save_uploads(files, dest: Path):
         name = Path(f.filename or "").name
         if Path(name).suffix.lower() not in find_me.IMAGE_EXTENSIONS:
             continue
+        f.stream.seek(0, os.SEEK_END)
+        size = f.stream.tell()
+        f.stream.seek(0)
         target = dest / name
         n = 1
-        while target.exists():                     # same name twice? keep both
-            target = dest / f"{Path(name).stem}_{n}{Path(name).suffix}"
+        duplicate = False
+        while target.exists():
+            if target.stat().st_size == size:      # same name AND same size: already added
+                duplicate = True
+                break
+            target = dest / f"{Path(name).stem}_{n}{Path(name).suffix}"   # different file, same name
             n += 1
+        if duplicate:
+            continue
         f.save(target)
         saved += 1
     return saved
@@ -192,6 +201,9 @@ PAGE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FaceGotcha</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32.png">
+<link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 <style>
   :root { --bg:#F6F3FF; --ink:#1A1530; --muted:#5E5877; --grape:#6D4AFF; --mint:#20D6A0; --lemon:#FFD93D;
           --pink:#FF5C9D; --sky:#5CC8FF; }
@@ -201,7 +213,8 @@ PAGE = r"""<!doctype html>
   #fx { position:fixed; inset:0; pointer-events:none; z-index:50; }
   .wrap { max-width:780px; margin:0 auto; padding:28px 16px 72px; }
   header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:22px; }
-  h1 { font-family:"Segoe UI Black","Arial Black",system-ui,sans-serif; font-weight:900; font-size:2.3rem; margin:0; letter-spacing:-.02em; }
+  h1 { font-family:"Segoe UI Black","Arial Black",system-ui,sans-serif; font-weight:900; font-size:2.3rem; margin:0; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; }
+  .logo { width:62px; height:62px; display:block; }
   .wiggle { display:inline-block; animation:wig 2.4s ease-in-out infinite; }
   @keyframes wig { 0%,100% { rotate:-8deg; } 50% { rotate:10deg; } }
   .sub { color:var(--muted); margin:4px 0 0; max-width:30em; }
@@ -271,7 +284,7 @@ PAGE = r"""<!doctype html>
 <div class="wrap">
   <header>
     <div>
-      <h1>FaceGotcha <span class="wiggle">📸</span></h1>
+      <h1><span class="wiggle"><img class="logo" src="/static/logo.svg" alt=""></span>FaceGotcha</h1>
       <p class="sub">Dump the group-chat photo pile and we'll hunt down the ones you're in. Nothing leaves this computer.</p>
     </div>
     <div class="hud" title="Photos of you found so far"><span class="hudnum" id="hudNum">0</span><span class="hudlbl">found</span></div>
