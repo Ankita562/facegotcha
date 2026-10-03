@@ -188,110 +188,153 @@ def reset():
 
 
 # ----------------------------------------------------------------- the page
-PAGE = """<!doctype html>
+PAGE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FaceGotcha</title>
 <style>
-  :root { --paper:#F1F3F5; --ink:#1B2430; --muted:#5B6673; --teal:#0F766E; --red:#B4412F; --line:#C9D0D8; }
+  :root { --bg:#F6F3FF; --ink:#1A1530; --muted:#5E5877; --grape:#6D4AFF; --mint:#20D6A0; --lemon:#FFD93D;
+          --pink:#FF5C9D; --sky:#5CC8FF; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--paper); color:var(--ink);
-         font-family:"Segoe UI", system-ui, -apple-system, sans-serif; line-height:1.45; }
-  .wrap { max-width:760px; margin:0 auto; padding:24px 16px 64px; }
-  h1 { font-size:1.6rem; margin:0 0 4px; }
-  .sub { color:var(--muted); margin:0 0 24px; }
-  section { background:#fff; border:1px solid var(--line); border-radius:6px; padding:16px; margin-bottom:16px; }
-  h2 { font-size:1.05rem; margin:0 0 4px; }
-  .hint { color:var(--muted); font-size:.92rem; margin:0 0 12px; }
-  button, .btn { font:inherit; padding:11px 16px; border-radius:6px; cursor:pointer; border:2px solid var(--ink);
-                 background:transparent; color:var(--ink); display:inline-block; text-decoration:none; }
-  button.primary { background:var(--teal); border-color:var(--teal); color:#fff; }
-  button:disabled { opacity:.45; cursor:not-allowed; }
-  button:focus-visible, .btn:focus-visible { outline:3px solid #7AA7D9; outline-offset:2px; }
-  .thumbs { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-  .thumbs img { width:64px; height:64px; object-fit:cover; border-radius:4px; border:1px solid var(--line); }
-  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-  .count { color:var(--muted); font-size:.95rem; }
-  #bar { height:10px; background:var(--line); border-radius:5px; overflow:hidden; margin:12px 0 6px; display:none; }
-  #fill { height:100%; width:0; background:var(--teal); transition:width .2s; }
-  .error { color:var(--red); margin:8px 0 0; }
+  body { margin:0; color:var(--ink); font-family:"Segoe UI", system-ui, -apple-system, sans-serif; line-height:1.45;
+         background-color:var(--bg); background-image:radial-gradient(#D9D1F5 1.5px, transparent 1.5px); background-size:22px 22px; }
+  #fx { position:fixed; inset:0; pointer-events:none; z-index:50; }
+  .wrap { max-width:780px; margin:0 auto; padding:28px 16px 72px; }
+  header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:22px; }
+  h1 { font-family:"Segoe UI Black","Arial Black",system-ui,sans-serif; font-weight:900; font-size:2.3rem; margin:0; letter-spacing:-.02em; }
+  .wiggle { display:inline-block; animation:wig 2.4s ease-in-out infinite; }
+  @keyframes wig { 0%,100% { rotate:-8deg; } 50% { rotate:10deg; } }
+  .sub { color:var(--muted); margin:4px 0 0; max-width:30em; }
+  .hud { flex:none; width:92px; height:92px; border-radius:50%; background:var(--lemon); border:3px solid var(--ink);
+         box-shadow:4px 4px 0 var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; rotate:6deg; }
+  .hudnum { font-family:"Segoe UI Black","Arial Black",sans-serif; font-size:2rem; line-height:1; }
+  .hudlbl { font-weight:700; font-size:.8rem; }
+  section { background:#fff; border:3px solid var(--ink); border-radius:16px; padding:18px; margin-bottom:20px; box-shadow:6px 6px 0 var(--ink); }
+  h2 { display:flex; align-items:center; gap:10px; font-size:1.2rem; margin:0 0 4px; font-weight:800; }
+  .badge { width:34px; height:34px; border-radius:50%; border:3px solid var(--ink); display:grid; place-items:center; font-weight:900; flex:none; }
+  .b1 { background:var(--pink); } .b2 { background:var(--sky); } .b3 { background:var(--lemon); }
+  .hint { color:var(--muted); font-size:.95rem; margin:0 0 12px; }
+  .btn, button { font:inherit; font-weight:800; padding:11px 18px; border-radius:12px; border:3px solid var(--ink); background:#fff; color:var(--ink);
+                 cursor:pointer; box-shadow:4px 4px 0 var(--ink); transition:transform .08s, box-shadow .08s; text-decoration:none; display:inline-block; }
+  .btn:hover, button:hover { transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--ink); }
+  .btn:active, button:active { transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+  button:disabled { opacity:.45; cursor:not-allowed; transform:none; box-shadow:4px 4px 0 var(--ink); }
+  button:focus-visible, .btn:focus-visible, a:focus-visible { outline:3px solid var(--grape); outline-offset:3px; }
+  .grape { background:var(--grape); color:#fff; } .mint { background:var(--mint); } .pink { background:var(--pink); } .lemon { background:var(--lemon); }
+  .big { font-size:1.15rem; padding:14px 26px; }
+  .linkbtn { background:none; border:none; box-shadow:none; color:var(--muted); text-decoration:underline; font-weight:600; padding:6px; font-size:.9rem; }
+  .linkbtn:hover, .linkbtn:active { box-shadow:none; transform:none; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .chip { background:var(--bg); border:2px solid var(--ink); border-radius:999px; padding:2px 12px; font-weight:700; font-size:.9rem; }
+  .thumbs { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .thumbs img { width:70px; height:70px; object-fit:cover; border:3px solid var(--ink); border-radius:6px; box-shadow:3px 3px 0 var(--ink); }
+  .thumbs img:nth-child(odd) { rotate:-3deg; } .thumbs img:nth-child(even) { rotate:3deg; }
+  .error { color:#B3123F; font-weight:600; margin:8px 0 0; }
+  #bar { display:none; height:22px; border:3px solid var(--ink); border-radius:999px; background:#fff; overflow:hidden; margin:16px 0 8px; }
+  #fill { height:100%; width:0; transition:width .25s; border-right:3px solid var(--ink);
+          background:repeating-linear-gradient(45deg, var(--mint) 0 12px, #7BF0CD 12px 24px); background-size:34px 34px; animation:slide 1s linear infinite; }
+  @keyframes slide { to { background-position:34px 0; } }
+  .count { color:var(--muted); font-size:.95rem; margin:0; }
+  #fun { font-weight:700; margin:4px 0 0; min-height:1.4em; }
   #deckwrap { display:none; }
-  #stage { position:relative; height:min(64vh,520px); display:flex; align-items:center; justify-content:center;
-           touch-action:pan-y; user-select:none; }
-  #card { position:relative; max-width:100%; max-height:100%; background:#fff; border:1px solid var(--line);
-          border-radius:8px; padding:8px; box-shadow:0 8px 24px rgba(27,36,48,.14); cursor:grab; touch-action:pan-y; }
+  .deckhead { display:flex; align-items:center; gap:12px; margin:6px 0 10px; }
+  #deckTrack { flex:1; height:14px; border:3px solid var(--ink); border-radius:999px; overflow:hidden; background:#fff; }
+  #deckBar { height:100%; width:0; background:var(--grape); transition:width .3s; }
+  #stage { position:relative; height:min(62vh,540px); display:flex; align-items:center; justify-content:center; touch-action:pan-y; user-select:none; }
+  .ghost { position:absolute; width:min(78%,420px); height:84%; background:#fff; border:3px solid var(--ink); border-radius:6px; display:none; }
+  #stage.stack .ghost { display:block; }
+  .g1 { rotate:4deg; } .g2 { rotate:-5deg; background:var(--lemon); }
+  #card { position:relative; z-index:2; max-width:100%; background:#fff; border:3px solid var(--ink); border-radius:6px; padding:10px 10px 0;
+          box-shadow:6px 6px 0 var(--ink); rotate:-1.2deg; cursor:grab; touch-action:pan-y; }
   #card:active { cursor:grabbing; }
-  #photo { display:block; max-width:100%; max-height:calc(min(64vh,520px) - 20px); object-fit:contain;
-           pointer-events:none; -webkit-user-drag:none; }
-  .tag { position:absolute; top:18px; padding:6px 12px; border:3px solid; border-radius:6px; font-weight:700;
-         font-size:1.2rem; opacity:0; background:rgba(255,255,255,.85); }
-  #tagYes { left:18px; color:var(--teal); border-color:var(--teal); transform:rotate(-8deg); }
-  #tagNo  { right:18px; color:var(--red); border-color:var(--red); transform:rotate(8deg); }
-  .deckbtns { display:flex; gap:10px; justify-content:center; margin-top:14px; }
-  .deckbtns button { min-width:120px; }
-  .no { border-color:var(--red); color:var(--red); }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin-top:12px; }
-  .grid img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:4px; border:1px solid var(--line); }
+  #card::before { content:""; position:absolute; top:-14px; left:50%; width:84px; height:26px; margin-left:-42px; rotate:-3deg;
+                  background:rgba(92,200,255,.75); border:2px solid var(--ink); }
+  #photo { display:block; max-width:100%; max-height:calc(min(62vh,540px) - 96px); object-fit:contain; pointer-events:none; -webkit-user-drag:none; }
+  #cap { height:46px; display:flex; align-items:center; justify-content:center; font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive; color:var(--muted); font-size:.95rem; }
+  .tag { position:absolute; top:26px; padding:4px 14px; border:4px solid var(--ink); border-radius:10px; font-family:"Segoe UI Black","Arial Black",sans-serif;
+         font-size:1.7rem; opacity:0; z-index:3; pointer-events:none; }
+  #tagYes { left:14px; background:var(--mint); rotate:-12deg; } #tagNo { right:14px; background:var(--pink); rotate:12deg; }
+  .deckbtns { display:flex; gap:12px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .keys { text-align:center; margin:14px 0 0; }
   #results { display:none; }
-  .linkbtn { background:none; border:none; color:var(--muted); text-decoration:underline; padding:0; font-size:.9rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:16px; margin-top:18px; }
+  .pol { display:block; background:#fff; border:3px solid var(--ink); padding:5px 5px 16px; box-shadow:3px 3px 0 var(--ink); transition:transform .15s; }
+  .pol img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+  .pol:nth-child(3n+1) { rotate:-2deg; } .pol:nth-child(3n+2) { rotate:1.5deg; } .pol:nth-child(3n) { rotate:-.5deg; }
+  .pol:hover { rotate:0deg; transform:scale(1.05); z-index:2; }
+  @media (prefers-reduced-motion: reduce) {
+    .wiggle, #fill { animation:none; } * { transition:none !important; }
+  }
 </style></head>
-<body><div class="wrap">
-  <h1>FaceGotcha</h1>
-  <p class="sub">Find the photos you're in. Everything stays on this computer.</p>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>FaceGotcha <span class="wiggle">📸</span></h1>
+      <p class="sub">Dump the group-chat photo pile and we'll hunt down the ones you're in. Nothing leaves this computer.</p>
+    </div>
+    <div class="hud" title="Photos of you found so far"><span class="hudnum" id="hudNum">0</span><span class="hudlbl">found</span></div>
+  </header>
 
   <section>
-    <h2>1. Your face</h2>
-    <p class="hint">Choose up to 5 clear photos of the same person. Solo photos work best.</p>
+    <h2><span class="badge b1">1</span>Show us your face</h2>
+    <p class="hint">Pick up to 5 clear photos of you. Solo shots work best.</p>
     <input type="file" id="refInput" accept="image/*" multiple hidden>
-    <button id="refBtn">Choose reference photos</button>
+    <button class="pink" id="refBtn">Pick your photos</button>
     <div class="thumbs" id="refThumbs"></div>
     <p class="error" id="refErr"></p>
   </section>
 
   <section>
-    <h2>2. Photos to search</h2>
-    <p class="hint">Add photos, or a whole folder, such as your unzipped WhatsApp export.</p>
+    <h2><span class="badge b2">2</span>Throw in the photo pile</h2>
+    <p class="hint">Add photos, or a whole folder, like your unzipped WhatsApp export.</p>
     <input type="file" id="photoInput" accept="image/*" multiple hidden>
     <input type="file" id="folderInput" webkitdirectory multiple hidden>
     <div class="row">
       <button id="photoBtn">Add photos</button>
       <button id="folderBtn">Add a folder</button>
-      <span class="count" id="photoCount">0 photos added</span>
+      <span class="chip" id="photoCount">0 photos added</span>
     </div>
     <p class="error" id="photoErr"></p>
   </section>
 
   <section>
+    <h2><span class="badge b3">3</span>Start the hunt</h2>
     <div class="row">
-      <button class="primary" id="runBtn" disabled>Find my photos</button>
+      <button class="grape big" id="runBtn" disabled>Find my photos</button>
       <button class="linkbtn" id="resetBtn">Start over</button>
     </div>
     <div id="bar"><div id="fill"></div></div>
-    <p class="count" id="runText"></p>
+    <p class="count" id="runText" aria-live="polite"></p>
+    <p id="fun"></p>
     <p class="error" id="runErr"></p>
   </section>
 
   <section id="deckwrap">
     <h2>Is this you?</h2>
-    <p class="hint" id="deckHint">Swipe right if it's you, left if not. Check every face in the photo.</p>
+    <p class="hint">Swipe right if it's you, left if not. Check every face in the photo.</p>
+    <div class="deckhead"><span class="chip" id="deckLeft"></span><div id="deckTrack"><div id="deckBar"></div></div></div>
     <div id="stage">
+      <div class="ghost g2"></div><div class="ghost g1"></div>
       <div id="card">
         <img id="photo" alt="Photo to review">
-        <span class="tag" id="tagYes">Me</span><span class="tag" id="tagNo">Not me</span>
+        <div id="cap"></div>
+        <span class="tag" id="tagYes">GOTCHA!</span><span class="tag" id="tagNo">NOPE</span>
       </div>
     </div>
     <div class="deckbtns">
-      <button class="no" id="noBtn">Not me</button>
+      <button class="pink" id="noBtn">Nope</button>
       <button id="undoBtn">Undo</button>
-      <button class="primary" id="yesBtn">That's me</button>
+      <button class="mint" id="yesBtn">That's me!</button>
     </div>
-    <p class="count" style="text-align:center">Keys: left arrow = not me, right arrow = me, Z = undo</p>
+    <p class="count keys">Keys: left arrow = nope, right arrow = that's me, Z = undo</p>
   </section>
 
   <section id="results">
-    <h2 id="resultsTitle">Your photos</h2>
+    <h2 id="resultsTitle">Hunt complete</h2>
     <p class="hint" id="resultsHint"></p>
-    <a class="btn primary" href="/api/download" id="dl">Download as zip</a>
+    <a class="btn lemon big" href="/api/download" id="dl">Download as zip</a>
     <div class="grid" id="grid"></div>
   </section>
 </div>
@@ -300,9 +343,50 @@ PAGE = """<!doctype html>
 const $ = id => document.getElementById(id);
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let st = null, current = null, busy = false, poller = null, gridKey = '';
+let deckTotal = 0, celebrated = true, shown = 0, funTimer = null;
+const FUN = ['Squinting at group shots...', 'Counting faces...', 'Comparing fingerprints...',
+             'Ignoring photos of food...', 'Looking for that one smile...', 'Checking every corner of the frame...'];
 
 async function api(path, opts) { return (await fetch(path, opts)).json(); }
 
+/* ---------- confetti ---------- */
+const fx = $('fx'), ctx = fx.getContext('2d'); let parts = [], raf = null;
+function sizeFx() { fx.width = innerWidth; fx.height = innerHeight; }
+addEventListener('resize', sizeFx); sizeFx();
+function burst(x, y, n) {
+  if (reduceMotion) return;
+  const cols = ['#6D4AFF', '#20D6A0', '#FFD93D', '#FF5C9D', '#5CC8FF'];
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 4 + Math.random() * 7;
+    parts.push({x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 5, r: 3 + Math.random() * 4,
+                c: cols[i % 5], life: 70 + Math.random() * 30, rot: Math.random() * 6});
+  }
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+function tick() {
+  ctx.clearRect(0, 0, fx.width, fx.height);
+  parts = parts.filter(p => p.life > 0);
+  for (const p of parts) {
+    p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.vx *= 0.99; p.life--; p.rot += 0.2;
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+    ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore();
+  }
+  raf = parts.length ? requestAnimationFrame(tick) : null;
+}
+
+/* ---------- counter in the corner ---------- */
+function countTo(to) {
+  const el = $('hudNum'), from = shown; shown = to;
+  if (reduceMotion || from === to) { el.textContent = to; return; }
+  const t0 = performance.now();
+  (function step(t) {
+    const k = Math.min(1, (t - t0) / 500);
+    el.textContent = Math.round(from + (to - from) * k);
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ---------- uploads ---------- */
 async function upload(kind, files, errEl) {
   errEl.textContent = '';
   const BATCH = 20;
@@ -311,11 +395,10 @@ async function upload(kind, files, errEl) {
     files.slice(i, i + BATCH).forEach(f => fd.append('files', f, f.name));
     const r = await api('/api/upload/' + kind, {method: 'POST', body: fd});
     if (!r.ok) { errEl.textContent = r.error || 'Upload failed.'; return; }
-    if (kind === 'photos') { $('photoCount').textContent = 'Adding... ' + Math.min(i + BATCH, files.length) + ' of ' + files.length; }
+    if (kind === 'photos') $('photoCount').textContent = 'Adding... ' + Math.min(i + BATCH, files.length) + ' of ' + files.length;
   }
   refresh();
 }
-
 $('refBtn').onclick = () => $('refInput').click();
 $('photoBtn').onclick = () => $('photoInput').click();
 $('folderBtn').onclick = () => $('folderInput').click();
@@ -327,12 +410,14 @@ $('runBtn').onclick = async () => {
   $('runErr').textContent = '';
   const r = await api('/api/run', {method: 'POST'});
   if (!r.ok) { $('runErr').textContent = r.error; return; }
+  celebrated = false; deckTotal = 0; gridKey = '';
   startPolling();
 };
 $('resetBtn').onclick = async () => {
   if (!confirm('Remove the uploaded copies and start over? Your original photos are not affected.')) return;
   const r = await api('/api/reset', {method: 'POST'});
   if (!r.ok) alert(r.error);
+  celebrated = true; deckTotal = 0; gridKey = ''; countTo(0);
   refresh();
 };
 
@@ -351,55 +436,85 @@ async function refresh() {
   if (running) {
     $('fill').style.width = (st.job.total ? 100 * st.job.done / st.job.total : 0) + '%';
     $('runText').textContent = 'Searching: ' + st.job.done + ' of ' + st.job.total + ' photos';
-  } else if (st.job.state === 'done') {
-    const c = st.job.counts;
-    $('runText').textContent = 'Searched ' + c.total + ' photos. ' + c.matched + ' matched, ' + c.maybe + ' to review.';
-  } else if (st.job.state === 'error') {
-    $('runErr').textContent = st.job.error; $('runText').textContent = '';
-  } else { $('runText').textContent = ''; }
+    if (!funTimer) {
+      let i = 0; $('fun').textContent = FUN[0];
+      funTimer = setInterval(() => { i = (i + 1) % FUN.length; $('fun').textContent = FUN[i]; }, 2200);
+    }
+  } else {
+    if (funTimer) { clearInterval(funTimer); funTimer = null; }
+    $('fun').textContent = '';
+    if (st.job.state === 'done') {
+      const c = st.job.counts;
+      $('runText').textContent = 'Searched ' + c.total + ' photos. ' + c.matched + ' matched, ' + c.maybe + ' to review.';
+    } else if (st.job.state === 'error') {
+      $('runErr').textContent = st.job.error; $('runText').textContent = '';
+    } else { $('runText').textContent = ''; }
+  }
   if (!running && poller) { clearInterval(poller); poller = null; }
 
-  // review deck
+  countTo(st.job.state === 'done' ? st.matched : 0);
+
+  // swipe deck
   const showDeck = st.job.state === 'done' && st.maybe > 0;
   $('deckwrap').style.display = showDeck ? 'block' : 'none';
-  if (showDeck && st.next !== current) { current = st.next; showCard(); }
-  if (!showDeck) current = null;
-  $('deckHint').textContent = 'Swipe right if it\\'s you, left if not. ' + st.maybe + ' left. Check every face in the photo.';
+  if (showDeck) {
+    deckTotal = Math.max(deckTotal, st.maybe);
+    $('deckLeft').textContent = st.maybe + ' left';
+    $('deckBar').style.width = (100 * (deckTotal - st.maybe) / deckTotal) + '%';
+    $('stage').classList.toggle('stack', st.maybe > 1);
+    if (st.next !== current) { current = st.next; showCard(); }
+  } else { current = null; }
 
-  // results grid
+  // results
   const showResults = st.job.state === 'done' && !st.maybe;
   $('results').style.display = showResults ? 'block' : 'none';
   if (showResults) {
-    $('resultsTitle').textContent = st.matched + (st.matched === 1 ? ' photo of you' : ' photos of you');
+    $('resultsTitle').textContent = st.matched === 0 ? 'No photos of you this time'
+      : 'Hunt complete: you are in ' + st.matched + (st.matched === 1 ? ' photo' : ' photos');
     $('resultsHint').textContent = 'Copies are also saved in workspace/results/matched.';
     $('dl').style.display = st.matched ? 'inline-block' : 'none';
     const key = String(st.matched);
     if (key !== gridKey) { gridKey = key; loadGrid(); }
+    if (!celebrated) {
+      celebrated = true;
+      if (st.matched) { burst(innerWidth * 0.3, innerHeight * 0.35, 90); burst(innerWidth * 0.7, innerHeight * 0.35, 90); }
+    }
   }
 }
 
 async function loadGrid() {
-  // ask the server which photos are in the matched folder
   const r = await api('/api/matched');
-  $('grid').innerHTML = r.names.map(n => '<img loading="lazy" src="/img/matched/' + encodeURIComponent(n) + '" alt="">').join('');
+  $('grid').innerHTML = r.names.map(n => {
+    const u = '/img/matched/' + encodeURIComponent(n);
+    return '<a class="pol" href="' + u + '" target="_blank" rel="noopener"><img loading="lazy" src="' + u + '" alt=""></a>';
+  }).join('');
 }
 
+/* ---------- swipe deck ---------- */
 function showCard() {
   const card = $('card');
   card.style.transition = 'none'; card.style.transform = ''; card.style.opacity = 1;
   $('tagYes').style.opacity = 0; $('tagNo').style.opacity = 0;
-  if (current) $('photo').src = '/img/maybe/' + encodeURIComponent(current);
+  if (current) {
+    $('photo').src = '/img/maybe/' + encodeURIComponent(current);
+    const sc = parseFloat(current.split('_')[0]);
+    $('cap').textContent = isNaN(sc) ? '' : 'match score ' + sc.toFixed(2);
+  }
 }
 
 async function decide(decision) {
   if (!current || busy) return;
   busy = true;
   const card = $('card'), dir = decision === 'me' ? 1 : -1;
+  $('tagYes').style.opacity = decision === 'me' ? 1 : 0;
+  $('tagNo').style.opacity = decision === 'me' ? 0 : 1;
+  if (decision === 'me') { const b = card.getBoundingClientRect(); burst(b.left + b.width / 2, b.top + b.height / 2, 36); }
   if (!reduceMotion) {
-    card.style.transition = 'transform .25s ease-out, opacity .25s';
-    card.style.transform = 'translateX(' + dir * window.innerWidth * 0.8 + 'px) rotate(' + dir * 22 + 'deg)';
+    await new Promise(r => setTimeout(r, 120));
+    card.style.transition = 'transform .28s ease-out, opacity .28s';
+    card.style.transform = 'translateX(' + dir * innerWidth * 0.8 + 'px) rotate(' + dir * 22 + 'deg)';
     card.style.opacity = 0;
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 280));
   }
   await api('/api/decide', {method: 'POST', headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({name: current, decision})});
@@ -419,7 +534,6 @@ document.addEventListener('keydown', e => {
   else if (e.key.toLowerCase() === 'z') undo();
 });
 
-// drag to swipe
 (() => {
   const card = $('card'); let startX = 0, dx = 0, dragging = false;
   card.addEventListener('pointerdown', e => {
@@ -430,9 +544,9 @@ document.addEventListener('keydown', e => {
   card.addEventListener('pointermove', e => {
     if (!dragging) return;
     dx = e.clientX - startX;
-    card.style.transform = 'translateX(' + dx + 'px) rotate(' + dx / 20 + 'deg)';
-    $('tagYes').style.opacity = Math.max(0, Math.min(1, dx / 100));
-    $('tagNo').style.opacity = Math.max(0, Math.min(1, -dx / 100));
+    card.style.transform = 'translateX(' + dx + 'px) rotate(' + dx / 18 + 'deg)';
+    $('tagYes').style.opacity = Math.max(0, Math.min(1, dx / 90));
+    $('tagNo').style.opacity = Math.max(0, Math.min(1, -dx / 90));
   });
   const end = () => {
     if (!dragging) return; dragging = false;
