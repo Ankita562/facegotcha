@@ -1,0 +1,23 @@
+# Never commit people's photos, chats, or results
+workspace/
+refs/
+photos/
+results*/
+*.zip
+chat.txt
+chat.md
+_chat.txt
+*.jpg
+*.jpeg
+*.heic
+*.HEIC
+
+# Model files are downloaded separately (see README)
+*.onnx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
