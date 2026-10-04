@@ -30,7 +30,7 @@ Drop in a few photos of your face and a folder of group photos. FaceGotcha finds
 
 ## Demo
 
-- Video: [Watch the demo video](https://drive.google.com/file/d/1sbdd88orENvaOkqviMm3ljYHQgyU6LAl/view?usp=sharing)
+- Video: [Watch the demo video](https://youtu.be/_mOHaZB9odU)
 
 <p align="center">
   <img src="docs/start.png" width="52%" alt="The start screen">
