@@ -160,7 +160,7 @@ cd facegotcha
 ./run.sh
 ```
 
-Then open **http://127.0.0.1:5000** in your browser.
+Your browser opens FaceGotcha automatically. If it doesn't, go to **http://127.0.0.1:5000**.
 
 The first setup needs internet once, to download about 37 MB of open-source face models from OpenCV Zoo. It only downloads those two model files and sends no photos or data anywhere. After that, FaceGotcha works fully offline.
 
@@ -208,12 +208,12 @@ Open each link, click the file name, then use the **Download raw file** button. 
 Check the sizes. If a file is only a few hundred bytes, you saved a pointer page instead of the model, so download it again.
  
 #### 3. Run it
- 
+
 ```bash
 python app.py
 ```
- 
-Open **http://127.0.0.1:5000** in your browser.
+
+Your browser opens automatically. If it doesn't, go to **http://127.0.0.1:5000**.
 </details>
 
 ## How to use it
