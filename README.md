@@ -135,62 +135,45 @@ Both models come from OpenCV Zoo. YuNet is under the **MIT License** and SFace i
 
 ### What you need
 
-- **Python 3.10 or newer** ([python.org](https://www.python.org/downloads/)). Tested on Windows with Python 3.11.
+- **Python 3.10 or newer** ([python.org](https://www.python.org/downloads/)). Tick "Add python.exe to PATH" when installing.
 - **Git** ([git-scm.com](https://git-scm.com/downloads)), or download the repo as a zip from GitHub
 - About 100 MB of free disk space, plus room for your photos
 - No GPU needed
 
-### 1. Get the code
+### Quick start
+
+**Windows**
+
+```powershell
+git clone https://github.com/Ankita562/facegotcha.git
+cd facegotcha
+setup.bat
+run.bat
+```
+
+**macOS / Linux**
 
 ```bash
 git clone https://github.com/Ankita562/facegotcha.git
 cd facegotcha
+./setup.sh
+./run.sh
 ```
 
-### 2. Create a virtual environment and install
+Then open **http://127.0.0.1:5000** in your browser.
 
-Windows (PowerShell):
+The first setup needs internet once, to download about 37 MB of open-source face models from OpenCV Zoo. It only downloads those two model files and sends no photos or data anywhere. After that, FaceGotcha works fully offline.
 
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+If Windows shows a SmartScreen warning for `setup.bat`, click **More info**, then **Run anyway**. The script is plain text you can read first.
 
-Windows (Git Bash):
+The `.sh` scripts are untested on macOS and Linux. If one fails, use the manual setup below.
 
-```bash
-python -m venv .venv
-source .venv/Scripts/activate
-pip install -r requirements.txt
-```
+<details>
+<summary>Manual setup (if the scripts don't work)</summary>
 
-macOS or Linux:
+(paste your old steps 2, 3 and 4 here, unchanged)
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 3. Download the two model files
-
-Download these two files from OpenCV Zoo and put them in the `models` folder of this project:
-
-1. [`face_detection_yunet_2023mar.onnx`](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet) (about 230 KB)
-2. [`face_recognition_sface_2021dec.onnx`](https://github.com/opencv/opencv_zoo/tree/main/models/face_recognition_sface) (about 37 MB)
-
-Open each link, click the file name, then use the **Download raw file** button. Use these exact files, not the `int8` or `2026may` ones.
-
-Check the sizes. If a file is only a few hundred bytes, you saved a pointer page instead of the model, so download it again.
-
-### 4. Run it
-
-```bash
-python app.py
-```
-
-Open **http://127.0.0.1:5000** in your browser.
+</details>
 
 ## How to use it
 
