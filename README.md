@@ -171,8 +171,49 @@ The `.sh` scripts are untested on macOS and Linux. If one fails, use the manual 
 <details>
 <summary>Manual setup (if the scripts don't work)</summary>
 
-(paste your old steps 2, 3 and 4 here, unchanged)
+#### 1. Create a virtual environment and install
+ 
+Windows (PowerShell):
+ 
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+ 
+Windows (Git Bash):
+ 
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+pip install -r requirements.txt
+```
+ 
+macOS or Linux:
+ 
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
+#### 2. Download the two model files
+ 
+Download these two files from OpenCV Zoo and put them in the `models` folder of this project:
+ 
+1. [`face_detection_yunet_2023mar.onnx`](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet) (about 230 KB)
+2. [`face_recognition_sface_2021dec.onnx`](https://github.com/opencv/opencv_zoo/tree/main/models/face_recognition_sface) (about 37 MB)
+Open each link, click the file name, then use the **Download raw file** button. Use these exact files, not the `int8` or `2026may` ones.
+ 
+Check the sizes. If a file is only a few hundred bytes, you saved a pointer page instead of the model, so download it again.
+ 
+#### 3. Run it
+ 
+```bash
+python app.py
+```
+ 
+Open **http://127.0.0.1:5000** in your browser.
 </details>
 
 ## How to use it
@@ -205,11 +246,13 @@ Your uploads are **copied**. Your original photos are never moved or deleted. Ev
 - If the person who took the photos can send originals as documents or through a shared folder, you'll get better quality than WhatsApp's compressed copies.
 
 ### Command-line version
-
+ 
+Run this with the virtual environment active (or use `.venv\Scripts\python` on Windows, `.venv/bin/python` on macOS/Linux):
+ 
 ```bash
 python find_me.py --refs my_refs --photos my_photos --out my_results --threshold 0.53 --review-floor 0.38
 ```
-
+ 
 This copies matches to `my_results/matched`, borderline photos to `my_results/maybe`, and writes a `results.csv` with every score.
 
 ## Settings
@@ -246,11 +289,13 @@ This is a **small test**: 60 WhatsApp photos from one group chat, 5 reference ph
 - It's a local single-user tool. Don't expose it to the internet.
 - If you move photos between albums with **Not me** / **That's me**, the Numbers section counts them as borderline decisions, so its bar and percentage can be slightly off.
 - Dragging a folder onto the page works in desktop browsers (Chrome, Edge, Firefox), not on phones.
+- The one-step setup scripts have only been tested on Windows.
 
 ## Privacy
 
 - The page only listens on `127.0.0.1`, so other devices on your network can't open it.
 - Face fingerprints exist only in memory while a search runs, and are not saved.
+- The setup script's only network activity is downloading the two model files from OpenCV Zoo. Your photos and face data are never sent anywhere.
 - Copies of the photos you upload stay in `workspace/` until you delete them, so clear them when you're done with other people's photos.
 - The `.gitignore` keeps `workspace/`, `refs/`, `photos/`, and `results*/` out of the repository. Never commit photos of people.
 - Ask the people in your photos before you run this on a shared chat.
@@ -265,17 +310,20 @@ None of this is built yet. It's where I'd take it next.
 - **Learning from your swipes.** Use the photos you accepted and rejected to adjust the cut-offs for that person automatically.
 
 ## Project structure
-
+ 
 ```
-app.py            local web app: uploads, search job, swipe review, results, zip downloads, and the page's HTML
-find_me.py        the face search (also runs from the command line)
-static/           style.css, app.js, fonts/ (the Alice font), img/ (logo and browser-tab icons)
-docs/             the banner and the how-it-works graphic used in this README
-models/           put the two .onnx files here (not stored in the repo)
-workspace/        created at runtime: one timestamped folder per session, with copies of your photos and the results
-requirements.txt  Python packages
-LICENSE           the license for the code
-
+app.py               local web app: uploads, search job, swipe review, results, zip downloads, and the page's HTML
+find_me.py           the face search (also runs from the command line)
+setup.bat / setup.sh one-step setup: virtual environment, packages, and models
+run.bat / run.sh     starts the app
+download_models.py   downloads the two face models into models/ (called by setup)
+static/              style.css, app.js, fonts/ (the Alice font), img/ (logo and browser-tab icons)
+docs/                the banner and the how-it-works graphic used in this README
+models/              downloaded automatically by setup (not stored in the repo)
+workspace/           created at runtime: one timestamped folder per session, with copies of your photos and the results
+requirements.txt     Python packages
+.gitattributes       keeps line endings correct for the setup scripts
+LICENSE              the license for the code
 ```
 
 ## Built with
