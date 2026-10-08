@@ -438,5 +438,7 @@ def rejected_names():
 
 if __name__ == "__main__":
     WORK.mkdir(exist_ok=True)
+    import threading, webbrowser
+    threading.Timer(1.0, lambda: webbrowser.open("http://127.0.0.1:5000")).start()
     # 127.0.0.1 = this laptop only. Nobody else on your wifi can open the page.
     app.run(host="127.0.0.1", port=5000, debug=False)
